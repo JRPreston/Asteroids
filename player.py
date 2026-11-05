@@ -1,5 +1,6 @@
 from typing import override
 
+import math
 import circleshape
 from constants import PLAYER_RADIUS, LINE_WIDTH
 import pygame

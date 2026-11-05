@@ -2,7 +2,7 @@ from typing import override
 import random
 import pygame
 import circleshape
-from constants import EXPLOSION_SPEED
+from constants import EXPLOSION_SPEED, EXPLOSION_EXIST_TIME
 
 class ExplosionParticle(circleshape.CircleShape):
     def __init__(self, x: float, y: float, radius: float) -> None:
@@ -17,5 +17,5 @@ class ExplosionParticle(circleshape.CircleShape):
     def update(self, dt: float) -> None:
         self.position += self.velocity * dt
         self.exist_timer += dt
-        if self.exist_timer > 0.25:
+        if self.exist_timer > EXPLOSION_EXIST_TIME:
             self.kill()
