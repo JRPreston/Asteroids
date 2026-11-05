@@ -12,6 +12,7 @@ from shot import Shot
 class Player(player.Player):
     def __init__(self, x: float, y: float):
         super().__init__(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+        self.shoot_timer = 0
 
     def rotate(self, dt):
          self.rotation += PLAYER_TURN_SPEED * dt
@@ -23,14 +24,19 @@ class Player(player.Player):
         self.position += rotated_with_speed_vector
 
     def shoot(self):
-        shot = Shot(self.position[0], self.position[1], 1)
-        unit_vector = pygame.Vector2(0, 1)
-        rotated_vector = unit_vector.rotate(self.rotation)
-        rotated_with_speed_vector = rotated_vector * PLAYER_SHOOT_SPEED
-        shot.velocity += rotated_with_speed_vector
+        if self.shoot_timer > 0:
+            return
+        else:
+            self.shoot_timer = PLAYER_SHOOT_COOLDOWN_SECONDS
+            shot = Shot(self.position[0], self.position[1], 1)
+            unit_vector = pygame.Vector2(0, 1)
+            rotated_vector = unit_vector.rotate(self.rotation)
+            rotated_with_speed_vector = rotated_vector * PLAYER_SHOOT_SPEED
+            shot.velocity += rotated_with_speed_vector
 
     def update(self, dt: float) -> None:
         keys = pygame.key.get_pressed()
+        self.shoot_timer -= dt
 
         if keys[pygame.K_a]:
             self.rotate(-dt)
@@ -77,6 +83,11 @@ def main():
                 log_event("player_hit")
                 print("Game over!")
                 sys.exit()
+            for shot in shots:
+                if asteroid.collides_with(shot):
+                    log_event("asteroid_shot")
+                    asteroid.kill()
+                    shot.kill()
         for draw in drawable:
             draw.draw(screen)
         pygame.display.flip()
