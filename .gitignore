@@ -11,3 +11,4 @@ wheels/
 
 pyrightconfig.json
 game_state.jsonl
+game_events.jsonl
